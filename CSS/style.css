@@ -16,6 +16,7 @@ body{
     grid-template-columns:1fr 4fr 20fr ;
 }
 .side-nav{ 
+    grid-area: "nav";
     background-color: #005392;
     display:flex;
     flex-direction: column;
@@ -38,19 +39,22 @@ i.side-nav-icon{
 }
 
 .note-section{
+    grid-area: "note";
     height:100%;
     background-color: #ebebeb;
     box-shadow: 8px 0px 3px 0px #dcdcdc,inset 8px 0px 3px 0px #c0c0c0;
 }
 .note-section div{
-    font-size:1.3rem;
+    font-size:1.4rem;
     padding:10%;
     line-height: 0.9em;
 }
 .note-section h4{
+    
     padding-bottom:5%;
 }
 .main-section{
+    grid-area: "main";
     margin:3% 20% 0 20%;
 }
 .main-section h4{
@@ -65,4 +69,81 @@ i.side-nav-icon{
     font-size:0.7em;
     color:gray;
     padding:1% 0 2% 0;
+}
+.icons{
+    cursor:pointer;
+}
+.note-btn {
+    position: absolute;
+    right: 2rem;
+    bottom: 0.5rem;
+    height: 50px;
+    width: 50px;
+    background-color: #9b9b9b;
+    border: 2px solid rgb(21, 21, 21);
+    border-radius: 50%;
+    cursor: pointer;
+}
+.input {
+    position: absolute;
+    top: 15%;
+    /* width: 92%;
+    height: 300px;
+    border: 1px solid rgb(56, 55, 55); */
+    font-family: 'Montserrat', Arial;
+    width: 90%;
+    height: 400px;
+    padding: 20px;
+    /* border: 1px solid #838383; */
+    border: none;
+    outline: none;
+    resize: none;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+.inputTitle {
+    position: absolute;
+    top: 3%;
+    font-family: 'Montserrat', Arial;
+    width: 90%;
+    padding: 20px;
+    border: 1px solid #838383;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    /* border: none; */
+    outline: none;
+    /* border-radius: 8px; */
+    margin-bottom: 10px;
+}
+.inputTitle::placeholder,
+.input::placeholder {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: large;
+    font-weight: bold;
+    color: #423d3d;
+}
+
+@media screen and (max-width: 992px){
+    .container {
+        grid-template-rows:0.5fr 2fr ;
+        grid-template-columns: 0.5fr 2fr;
+        
+    }
+    .side-nav {
+        flex-direction: row;
+        grid-column: 1 / span 3;
+    }
+
+    .note-section {
+        box-shadow: none;
+    }
+
+    i.side-nav-icon {
+        padding-top: 0em;
+        justify-content: space-evenly;
+    }
+    .Q {
+        font-size: 2em;
+    }
 }
