@@ -66,3 +66,19 @@ i.side-nav-icon{
     color:gray;
     padding:1% 0 2% 0;
 }
+
+.fa-light fa-pen {
+    width: 30px;
+    background-color: aqua;
+}
+
+input {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    height: 300px;
+}
+
+.titel {
+    height: 30px;
+}
