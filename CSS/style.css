@@ -70,23 +70,6 @@ i.side-nav-icon{
     color:gray;
     padding:1% 0 2% 0;
 }
-<<<<<<< HEAD
-
-.fa-light fa-pen {
-    width: 30px;
-    background-color: aqua;
-}
-
-input {
-    display: flex;
-    flex-direction: column;
-    width: 300px;
-    height: 300px;
-}
-
-.titel {
-    height: 30px;
-=======
 .icons{
     cursor:pointer;
 }
@@ -163,5 +146,4 @@ input {
     .Q {
         font-size: 2em;
     }
->>>>>>> Caspar
 }
