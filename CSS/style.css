@@ -1,0 +1,145 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    height: 100vh;
+    font-size: 12px;
+}
+
+.container {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 4fr 20fr;
+}
+
+.side-nav {
+    background-color: #005392;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.Q {
+    font-family: 'Viaoda Libre', cursive;
+    font-size: 84px;
+    color: white;
+    width: 100%;
+    background-color: #1c354c;
+    text-align: center;
+    padding-left: 0.2em;
+    padding-right: 0.2em;
+}
+
+i.side-nav-icon {
+    color: white;
+    font-size: 42px;
+    padding-top: 1.2em;
+    cursor: pointer;
+}
+
+.note-section {
+    height: 100%;
+    background-color: #ebebeb;
+    box-shadow: 8px 0px 3px 0px #dcdcdc, inset 8px 0px 3px 0px #c0c0c0;
+}
+
+.note-section div {
+    font-size: 1.3rem;
+    padding: 10%;
+    line-height: 0.9em;
+    cursor: pointer;
+}
+
+.active-note-list {
+    background-color: #bcbcbc;
+    border: 2px solid rgb(47, 81, 156);
+    border-radius: 3px;
+}
+
+.note-section h4 {
+    padding-bottom: 5%;
+}
+
+.main-section {
+    /* margin: 3% 20% 0 20%; */
+    position: relative;
+}
+
+.main-section h4 {
+    font-size: 3rem;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.main-section p {
+    font-size: 1.6em;
+    line-height: 1.3em;
+}
+
+.date-wrapper {
+    font-size: 0.7em;
+    color: gray;
+    padding: 1% 0 2% 0;
+}
+
+.note-btn {
+    position: absolute;
+    right: 2rem;
+    bottom: 0.5rem;
+    height: 50px;
+    width: 50px;
+    background-color: #9b9b9b;
+    border: 2px solid rgb(21, 21, 21);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.input {
+    position: absolute;
+    top: 15%;
+    left: 3%;
+    /* width: 92%;
+    height: 300px;
+    border: 1px solid rgb(56, 55, 55); */
+    font-family: 'Montserrat', Arial;
+    width: 90%;
+    height: 400px;
+    padding: 20px;
+    /* border: 1px solid #838383; */
+    border: none;
+    outline: none;
+    resize: none;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.inputTitle {
+    position: absolute;
+    top: 3%;
+    left: 3%;
+    font-family: 'Montserrat', Arial;
+    width: 90%;
+    padding: 20px;
+    border: 1px solid #838383;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    /* border: none; */
+    outline: none;
+    /* border-radius: 8px; */
+    margin-bottom: 10px;
+}
+
+.inputTitle::placeholder,
+.input::placeholder {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: large;
+    font-weight: bold;
+    color: #423d3d;
+
+}
