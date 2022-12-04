@@ -1,142 +1,184 @@
-const noteBtn = document.getElementsByClassName("note-btn");
-const mainSection = document.getElementsByClassName("main-section");
-let mainSectionId = document.querySelector("#mainSection");
-const icon = document.getElementsByClassName("icon");
-let noteSection = document.querySelector("#noteSection");
-let icons = document.getElementsByClassName("side-nav-icon");
-let arrayForStorage = [];   // Array med de objekt som går till local storage //
-lastNavClick = [];      // Array med den ikon som klickats //
-let hidingAndShowingQuill = document.getElementById("hidingAndShowingQuill");
-let divInsideToolbar = document.getElementsByClassName("ql-toolbar"); //Div som Quill skapar tillsammans med editor element//
-var quill = new Quill('#editor', {        //Quill//
+const getBtn = document.querySelector(".getContent");
+const noteSideBar = document.querySelector(".note-section");
+const notesWrapper = document.querySelector(".notes-wrapper");
+const quillEditorWrapper = document.querySelector(".editor-wrapper");
+const welcomeScreen = document.querySelector(".welcome-screen");
+const sideNav = document.querySelector(".side-nav");
+const sideNavItems = document.querySelectorAll(".side-nav-item");
+const titleInput = document.querySelector(".title-input");
+const btnNew = document.querySelector(".btn-createNew")
+ 
+var ColorClass = Quill.import('attributors/class/color');
+Quill.register(ColorClass, true);
+ 
+let prevNotes = JSON.parse(localStorage.getItem("notes"));
+let editing = false;
+let editingNote;
+const toolbarOptions = [[{ 'header': [1, 2, 3, false] }], ['bold', 'italic', 'underline'], [{"color": []}, { 'background': [] }], ['link', 'image']];
+const notePreviewHtmlAdd = (note) => {
+    const html = `<div data-id='${note.id}' class='note-preview'>
+                    <h4>${note.title}</h4>
+                    <p>${note.subTitle}</p>
+ 
+                    <button class="btn-addToFav"><i class="icon fa fa-star" aria-hidden="true"></i></button>
+                    <button class='btn btn-editNote'><i class="icon fa fa-pencil" aria-hidden="true"></i></button>
+                </div>`
+    noteSideBar.insertAdjacentHTML("afterbegin", html)
+ 
+}
+ 
+const addNoteHtml = (note) => {
+    const html = `<div data-id='${note.id}' class="note">
+                        <h1>${note.title}</h1>
+                        <span class='date-wrapper'>Last edited: ${note.edited}</span>
+                        ${note.content}
+ 
+                      </div>`
+ 
+    notesWrapper.innerHTML = html;
+}
+ 
+if(!prevNotes) {
+    prevNotes = [];
+} else {
+    prevNotes.forEach(notePreviewHtmlAdd)
+}
+ 
+const quill = new Quill('#editor', {
+    modules: {
+        toolbar: toolbarOptions
+    },
     theme: 'snow'
 });
- 
-window.onload = (updateNoteSectionWithNotes());
- 
-    // Skapar klick event åt alla ikoner i nav section //
-for(i=0;i < icons.length;i++){      //Loopar över ikoner//
-    icons[i].addEventListener("click",addContentToNoteSection);
- 
-    //Uppdaterar innehållet i note-section beroende på vilken ikon som klickats i nav-section.//
-    /*
-        Lägger den klickade ikonens id som string i en array.
-        Sista index i arrayen kontrolleras varje gång man klickan på en ikon
-        Gör att notesection inte ska spammas med samma innehåll flera gånger 
-    */
-    function addContentToNoteSection(e){    //e är det ikon element som klickats.
-        console.log(e.target.id)
-            if(e.target.id === "settings" && lastNavClick[lastNavClick.length - 1] === "settings"){
-                console.log("Settings visas redan")  
-            }
-            else if(e.target.id === "settings" && lastNavClick[lastNavClick.length - 1] !== "settings"){     //SETTINGS//
-                noteSection.innerHTML = "";
-                let textFormatSetting = ["Setting3","Setting2","Setting1"];  
-                let divAmount = 3; //Ändra siffra när fler settings läggs till -- SKRIV OM TILL textFormatSetting.length -- //
-                let i = 0;
-                while(i < divAmount){ // FIXA TILL .length //
-                    i++;
-                    newDiv = document.createElement("div");
-                    let oneDiv = textFormatSetting.pop();
-                    newDiv.textContent = oneDiv;
-                    noteSection.appendChild(newDiv);
-                }   
-            }
-            else if(e.target.id === "seeNotes" && lastNavClick[lastNavClick.length - 1] !== "seeNotes"){     //NOTES//
-                noteSection.innerHTML = "";
-                updateNoteSectionWithNotes();
-            }
-        lastNavClick.push(e.target.id)      
+ 
+getBtn.addEventListener("click", (e) => {
+    if(!titleInput.value) {
+        alert("Please add a title");
+        return;
     }
-}; 
-        /* Hittar och lägger upp objekt från tidigare local storage till note-section, 
-         Används i search ikon & window.onload */
- 
-function updateNoteSectionWithNotes(){
-        let theStorage = JSON.parse(localStorage.getItem("TextAndTitle") ); 
-        if(theStorage){
-            for(i=0;i < theStorage.length;i++){
-                let createDiv = document.createElement("div");
-                let createTitle = document.createElement("h4");
-                let createP = document.createElement("p"); 
-                let windowObjFromStorage = theStorage[i];                     // Hämtar ett objekt                                      //
-                let windowObjectArray = (Object.values(windowObjFromStorage)); //Objektet är nu en array med 2 index. Titel och text     //
-                createTitle.textContent = windowObjectArray[0];               // Använder index för att lägga titel o text i sina taggar //
-                createP.textContent = windowObjectArray[1];
-                noteSection.appendChild(createDiv);
-                createDiv.appendChild(createTitle)
-                createDiv.appendChild(createP)
-                noteSection.appendChild(createDiv);
-                arrayForStorage.push(windowObjectArray);
-            } 
-        }
-        else if(theStorage == null){
-            console.log("Det finns inga sparade objekt")
-        }
+    const noteTitle = titleInput.value
+    const noteContent = quill.root.querySelector("p")
+    const noteSubTitle = noteContent ? `${noteContent.innerText.substring(0, 40)}...` : ""
+    const date = new Date().toLocaleDateString()
+    console.log(date)
+    if(editing) {
+        editing = false;
+        noteSideBar = "";
+        prevNotes.forEach(note => {
+            if(note.id == editingNote.id) {
+                note.title = noteTitle;
+                note.content = quill.root.innerHTML;
+                note.subTitle = noteSubTitle;
+                note.edited = date;
+                note.delta = quill.getContents();
+                editingNote = note;
+            }
+            notePreviewHtmlAdd(note)
+        })
+ 
+        localStorage.setItem("notes", JSON.stringify(prevNotes));
+        quill.root.innerHTML = titleInput.value = "";
+ 
+        notesWrapper.style.display = "block";
+        quillEditorWrapper.style.display = "none";
+ 
+        addNoteHtml(editingNote);
+        editingNote = undefined;
+        return
     }
-    //Klick event som sparar rubrik och text till localstorage & lägger till i notesection//
-noteBtn[0].addEventListener("click", () => {                           
-    var noteInputElementTitle = document.createElement("INPUT");     // <-- RUBRIK//
-    noteInputElementTitle.setAttribute("type", "text");
-    noteInputElementTitle.setAttribute("placeholder", "Title...");
-    noteInputElementTitle.setAttribute("id", "inputTitle");
-    noteInputElementTitle.classList.add("inputTitle");
- 
- 
-    hidingAndShowingQuill.style.display = "block";
-    hidingAndShowingQuill.firstElementChild.appendChild(noteInputElementTitle)
- 
- 
- 
- 
-    console.log("Clicked!");
- 
- 
-    if (icon[0].name === "pencil") {
-        icon[0].name = "save";
- 
-    } else {
-        icon[0].name = "pencil"
-        const inputTitle = document.getElementById("inputTitle");
-        const inputTitleValue = inputTitle.value;
-        const inputTextValueHTML = quill.root.innerHTML;
-        const inputTextValue = quill.root.textContent;
-        console.log(inputTextValue)
-        const input = document.getElementById("editor");
-        hidingAndShowingQuill.style.display = "none";    // Gömmer quill //
-        quill.deleteText(0,quill.getLength()); //Raderar text i quill annars visas text från tidigare session//
-        divInsideToolbar[0].removeChild(noteInputElementTitle) // Raderar titeln//
- 
-        function createObject(title,text,texthtml){                                      //Constructorfunktion >> skapar objekt att spara i localstorage //
-            this.title = title;
-            this.text = text;
-            this.texthtml = texthtml;
-        }
-        function saveToStorage(title,text,texthtml){
-            let newObject = Object.create(createObject);                                    //Skapar nytt objekt//
-            newObject.title = title;                                                        //Lägger in titel och namn//
-            newObject.text = text; 
-            newObject.texthtml = texthtml;
- 
-            arrayForStorage.push(newObject)                                                 //Lägger in objektet i tom array och sparar array i localstorage //
-            localStorage.setItem("TextAndTitle", JSON.stringify(arrayForStorage)); 
-            let createDiv = document.createElement("div");
-            let createTitle = document.createElement("h4");
-            let createP = document.createElement("p");   
-            createTitle.textContent = (arrayForStorage[arrayForStorage.length - 1].title)              
-            createP.textContent = (arrayForStorage[arrayForStorage.length - 1].text)        
-            noteSection.appendChild(createDiv);
-            createDiv.appendChild(createTitle)
-            createDiv.appendChild(createP)
-            noteSection.appendChild(createDiv)                                   //Lägger det senast tilllagda objektet högst i note-section div// 
-        } 
-        if(inputTitleValue && inputTextValue){                    //Om text skrivits i inputfälten så skickas den till saveToStorage funktionen//
-            saveToStorage(inputTitleValue,inputTextValue,inputTextValueHTML) // 1 Titel, 2 Text, 3 Text i html form, 4 tag, 5 favorit,        
-        }
-        else{
-            console.log("empty input")
-        };
-        inputTitle.remove();
- 
+    const noteObj = {
+        id: prevNotes.length,
+        title: noteTitle,
+        subTitle: noteSubTitle,
+        edited: date,
+        content: quill.root.innerHTML,
+        delta: quill.getContents(),
+        fav: false
     }
+    prevNotes.push(noteObj);
+    localStorage.setItem("notes", JSON.stringify(prevNotes));
+    notePreviewHtmlAdd(noteObj);
+})
+ 
+noteSideBar.addEventListener("click", (e) => {
+    const {target} = e
+    console.log(target)
+    if(target.classList.contains("note-preview")) {
+        welcomeScreen.style.display = "none"
+        const allNotesPreview = document.querySelectorAll(".note-preview")
+ 
+        allNotesPreview.forEach(el => el.classList.remove("active"))
+        target.classList.add("active")
+        const id = target.dataset.id;
+ 
+        const currNote = prevNotes.find(note => note.id == id)
+ 
+        console.log(currNote)
+        quillEditorWrapper.style.display = "none";
+        notesWrapper.style.display = "block";
+ 
+        addNoteHtml(currNote)
+    }
+ 
+    // if(target.classList.contains("btn-createNew")) {
+    // }
+ 
+    if(target.classList.contains("btn-addToFav")) {
+        const id = target.parentElement.dataset.id;
+        target.classList.toggle("active")
+        console.log("henlo")
+        prevNotes.forEach(note => {
+            if(note.id == id) {
+                console.log("henlo")
+                note.fav = !note.fav
+            }
+        })
+        localStorage.setItem("notes", JSON.stringify(prevNotes))
+    }
+    if(target.classList.contains("btn-editNote")) {
+        editing = true;
+        const id = target.parentElement.dataset.id
+ 
+        editingNote = prevNotes.find(note => note.id == id)
+ 
+        titleInput.value = editingNote.title
+        quillEditorWrapper.style.display = "block";
+        welcomeScreen.style.display = notesWrapper.style.display = "none";
+        quill.setContents(editingNote.delta);
+ 
+    }
+})
+ 
+notesWrapper.addEventListener("click", function(e) {
+ 
+})
+ 
+sideNav.addEventListener("click", function(e) {
+    const {target} = e
+    if(target.classList.contains("favourites")) {
+        welcomeScreen.style.display = notesWrapper.style.display = quillEditorWrapper.style.display = "none";
+        noteSideBar.innerHTML = ""
+        prevNotes.forEach(note => {
+            if(note.fav) {
+                notePreviewHtmlAdd(note)
+            }
+        })
+    }
+    if(target.classList.contains("Q")) {
+        noteSideBar.innerHTML = "";
+        prevNotes.forEach(notePreviewHtmlAdd)
+        welcomeScreen.style.display = "block"
+        notesWrapper.style.display = quillEditorWrapper.style.display = "none";
+    }
+ 
+    if(target.classList.contains("side-nav-item")) {
+        sideNavItems.forEach(item => item.classList.remove("active"))
+        target.classList.add("active")
+    }
+})
+ 
+ 
+btnNew.addEventListener("click", function(e) {
+    welcomeScreen.style.display = notesWrapper.style.display = "none";
+    quillEditorWrapper.style.display = "block";
 })
