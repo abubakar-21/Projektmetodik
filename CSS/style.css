@@ -139,3 +139,22 @@ i.side-nav-icon:hover{
         font-size: 2em;
     }
 }
+
+@media print {
+    body * {
+        visibility: hidden;
+        }
+
+    #editor * {
+        visibility: visible;
+            }
+            
+          
+     #editor {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: inherit;
+            }
+    
+}
