@@ -1,64 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="style.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Viaoda+Libre&display=swap" rel="stylesheet">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="style.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Viaoda+Libre&display=swap"
+      rel="stylesheet"
+    />
     <!--Font till Q-->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> <!-- Stjärna icon-->
-    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css">
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <!-- Stjärna icon-->
+    <link
+      href="https://cdn.quilljs.com/1.3.6/quill.snow.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700&family=Open+Sans:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
 
-    <title>Note</title>
-</head>
+    <title>QUIRE</title>
+  </head>
 
-<body>
+  <body>
     <div class="container">
-        <nav class="side-nav">
-            <div class="side-nav-item Q active">Q</div> <!-- Q -->
-            <div class="side-nav-item icon-container search"><i class="fa fa-search side-nav-icon "></i></div>
-            <!--SearchIcon-->
-            <div class="side-nav-item favourites icon-container"><i class="material-icons side-nav-icon">stars</i></div>
-            <!--StarIcon-->
-            <div class="side-nav-item icon-container settings"><i class="fa side-nav-icon">&#xf013;</i></div>
-        </nav>
-        <section class="note-section">
-        </section>
-        <main class="main-section">
-            <div class="welcome-screen">
-                <div>
-                    <h1>
-                        Welcome to QUIRE!
-                    </h1>
-                    <p>Take a note and unleash your creativity!</p>
-                </div>
-            </div>
-            <div class="notes-wrapper">
-
-            </div>
-            <div class="editor-wrapper wrapper" style="display: none;">
-                <div class="input-title">
-                    <label for="title" class="input-label">Title :</label>
-                    <input type="text" name="title" id="title" class="title-input">
-                </div>
-                <div id="editor">
-                </div>
-                <button class="btn-save getContent">
-                    <i class="save-icon icon fa fa-floppy-o" aria-hidden="true"></i>
-                </button>
-            </div>
-
-            <button class="btn btn-createNew"><i class="icon fa fa-pencil" aria-hidden="true"></i></button>
-        </main>
+      <nav class="side-nav">
+        <div class="side-nav-item Q active">Q</div>
+        <!-- Q -->
+        <div class="side-nav-item icon-container search">
+          <i class="fa fa-search side-nav-icon"></i>
+        </div>
+        <!--SearchIcon-->
+        <div class="side-nav-item favourites icon-container">
+          <i class="material-icons side-nav-icon">stars</i>
+        </div>
+        <!--StarIcon-->
+        <div class="side-nav-item icon-container settings">
+          <i class="fa side-nav-icon">&#xf013;</i>
+        </div>
+      </nav>
+      <section class="note-section"></section>
+      <main class="main-section">
+        <div class="welcome-screen">
+          <div>
+            <h1>Welcome to QUIRE!</h1>
+            <p>Take a note and unleash your creativity!</p>
+          </div>
+        </div>
+        <div class="notes-wrapper"></div>
+        <div class="editor-wrapper wrapper" style="display: none">
+          <div class="input-title">
+            <label for="title" class="input-label">Title :</label>
+            <input type="text" name="title" id="title" class="title-input" />
+          </div>
+          <div id="editor"></div>
+          <button class="btn-save getContent">
+            <i class="save-icon icon fa fa-floppy-o" aria-hidden="true"></i>
+          </button>
+        </div>
+        <div class="settings-page" style="display: none">
+          <h1>Settings</h1>
+          <label for="font-opt">Select other Font</label>
+          <select name="font-opt" id="font-opt" class="font-dropd">
+            <option value="" selected hidden>Change font</option>
+            <option value="open-sans" class="font-option">Open sans</option>
+            <option value="roboto" class="font-option">Roboto</option>
+            <option value="jost" class="font-option">Jost</option>
+          </select>
+        </div>
+        <button class="btn btn-createNew">
+          <i class="icon fa fa-pencil" aria-hidden="true"></i>
+        </button>
+      </main>
     </div>
 
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <script src="js/script.js"></script>
-</body>
-
+  </body>
 </html>
