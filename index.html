@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="/CSS/style.css" rel="stylesheet">
+    <link href="./CSS/style.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Viaoda+Libre&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Viaoda+Libre&display=swap" rel="stylesheet">
     <!--Font till Q-->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- Stjärna icon-->
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <!-- Quill-->
@@ -18,31 +18,33 @@
 </head>
 <body>
     <div class="container">
-        <nav class="side-nav">  
+        <nav class="side-nav">
             <!--NAV (borde byta tagg?)-->
-            <div class="Q">Q</div> 
+            <div class="Q">Q</div>
             <!-- Q -->
-            <i class="fa fa-search side-nav-icon" id="seeNotes"></i> 
+            <i class="fa fa-search side-nav-icon" id="seeNotes"></i>
             <!--SearchIcon-->
-            <i class="material-icons side-nav-icon" id="favorites">stars</i>  
+            <i class="material-icons side-nav-icon" id="favorites">stars</i>
             <!--StarIcon-->
             <i class="fa side-nav-icon" id="settings">&#xf013;</i>
         </nav>
-        <section class="note-section" id="noteSection">   
+        <section class="note-section" id="noteSection">
             <!-- NOTES -->
         </section>
-        <main class="main-section" id="mainSection">  
-            <!-- QUILL Toggle mellan display:none och display:block som gör att den inte alltid syns-->  
-            <div class="hidingAndShowingQuill" id="hidingAndShowingQuill">  
-                <div class="quillEditor" id="editor"></div>
-            </div>
-        <button class="note-btn" id="noteBtn">
-            <ion-icon class="icon" name="pencil"></ion-icon>
-        </button>
+        <main class="main-section" id="mainSection">
+            <!-- QUILL Toggle mellan display:none och display:block som gör att den inte alltid syns-->
+            <div class="main-section-wrapper">
+                <div class="hidingAndShowingQuill" id="hidingAndShowingQuill">
+                    <div id="editor"></div>
+                </div>
+                <button class="note-btn" id="noteBtn">
+                    <ion-icon class="icon" name="pencil"></ion-icon>
+                </button>
         </main>
- 
+    </div>
+
     </div>
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-    <script src="/JS/script.js"></script>
+    <script src="./JS/script.js"></script>
 </body>
 </html>
