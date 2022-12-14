@@ -9,6 +9,7 @@ let arrayForStorage = [];   // Array med de objekt som går till local storage /
 lastNavClick = [];      // Array med den ikon som klickats //
 let hidingAndShowingQuill = document.getElementById("hidingAndShowingQuill");
 let divInsideToolbar = document.getElementsByClassName("ql-toolbar"); //Div som Quill skapar tillsammans med editor element//
+noteSection.innerHTML = "";
 const toolbarOptions = [
         ['bold', 'italic', 'underline','strike'], 
         [{'header':1},{'header':2},{'header':false}],
@@ -16,7 +17,6 @@ const toolbarOptions = [
         ['image','link'],
         [{color:[]},{background:[]}]
 ]
-
 var quill = new Quill('#editor', {        //Quill//
     modules: {
 
@@ -24,11 +24,6 @@ var quill = new Quill('#editor', {        //Quill//
     },
     theme: 'snow',
 });
-
-
-function randomNum() {                  // Skapar ID till objekt
-    return Math.floor((Math.random() * 1000) + 1);
-}
 window.onload = (updateNoteSectionWithNotes());
 
 function welcome(){
@@ -42,7 +37,6 @@ function welcome(){
     welcomeDiv.classList.add("welcome")
     welcomeDiv.setAttribute("id","welcomeText");
     mainSectionWrapper[0].appendChild(welcomeDiv);
-
 }
 // Skapar klick event åt alla ikoner i nav section //
 for (i = 0; i < icons.length; i++) {      //Loopar över ikoner//
@@ -62,9 +56,9 @@ function addContentToNoteSection(e) {    //e är det ikon element som klickats.
     else if (e.target.id === "settings" && lastNavClick[lastNavClick.length - 1] !== "settings") {     //SETTINGS//
         noteSection.innerHTML = "";
         let textFormatSetting = ["Font", "Background Color"];
-        let divAmount = 2; //Ändra siffra när fler settings läggs till -- SKRIV OM TILL textFormatSetting.length -- //
+        let divAmount = 2;              //  SKRIV OM TILL textFormatSetting.length //
         let i = 0;
-        while (i < divAmount) { // FIXA TILL .length //
+        while (i < divAmount) {         // FIXA TILL .length //
             i++;
             newDiv = document.createElement("div");
             let oneDiv = textFormatSetting.pop();
@@ -74,6 +68,7 @@ function addContentToNoteSection(e) {    //e är det ikon element som klickats.
     }
     else if (e.target.id === "seeNotes" && lastNavClick[lastNavClick.length - 1] !== "seeNotes") {     //NOTES//
         noteSection.innerHTML = "";
+        checkIfFavorite()
         updateNoteSectionWithNotes();
         let removeWelcome = document.getElementById("welcomeText")
         try{                                                              //Undviker att welcometext dyker upp när search knappen används
@@ -81,6 +76,22 @@ function addContentToNoteSection(e) {    //e är det ikon element som klickats.
         }
         catch(err){}
     }
+    else if (e.target.id == "favorites" && lastNavClick[lastNavClick.length - 1] !== "favorites"){
+        let theStorageFavorite = JSON.parse(localStorage.getItem("TextAndTitle"));
+        console.log(theStorageFavorite[0])
+        checkIfFavorite()
+        let favoriteArray = []
+        noteSection.innerHTML = "";
+        function testIfFavorite(){
+            for(i=0;i<theStorageFavorite.length;i++){
+                if(theStorageFavorite[i].favorite == true){
+                    favoriteArray.push(theStorageFavorite[i])
+                }
+            }
+        }
+        testIfFavorite(theStorageFavorite)
+        }
+
     lastNavClick.push(e.target.id)
 }
 
@@ -91,35 +102,48 @@ function updateNoteSectionWithNotes() {
     let theStorage = JSON.parse(localStorage.getItem("TextAndTitle"));
     welcome()
     if (theStorage) {
-        console.log(theStorage)
         for (i = 0; i < theStorage.length; i++) {
             let createDiv = document.createElement("div");
             let createTitle = document.createElement("h4");
             let createP = document.createElement("p");
             let iconOne = "icon fa fa-star";
-            let iconTwo = "icon fa fa-pencil";
             let createIconStar = document.createElement("i");
-            let createIconPencil = document.createElement("i");
             createIconStar.classList.add.apply(createIconStar.classList, iconOne.split(" "))
-            createIconPencil.classList.add.apply(createIconPencil.classList, iconTwo.split(" "))
             createDiv.style.position = "relative";
-            createIconPencil.classList.add("note-section-icon")
             createIconStar.classList.add("note-section-icon")
-            createIconPencil.classList.add("note-section-pencil")
             createIconStar.classList.add("note-section-star")
             let windowObjFromStorage = theStorage[i];
             createTitle.textContent = windowObjFromStorage.title;
             createP.textContent = windowObjFromStorage.text;
             arrayForStorage.push(windowObjFromStorage)
             createDiv.appendChild(createTitle)
-            createDiv.appendChild(createP)
-            createDiv.appendChild(createIconPencil)
+            createDiv.appendChild(createP)       
             createDiv.appendChild(createIconStar)
             createIconStar.classList.add("fav-icon-star");
             createDiv.classList.add("note-section-prev");
             noteSection.appendChild(createDiv);
-
+            noteSection.addEventListener("click", (e) => {
+                if (e.target.parentNode.classList.contains("note-section")) {
+                    const allNotesPreview = document.querySelectorAll(".note-section-prev")
+                    allNotesPreview.forEach(el => el.classList.remove("active-note-list"))
+                    e.target.classList.add("active-note-list")
+                }
+                if (e.target.classList.contains("fav-icon-star")) {  
+                    e.target.classList.toggle("fav-icon-color");
+                }
+            })
         }
+        noteSection.addEventListener("click", (e) => {
+            if (e.target.parentNode.classList.contains("note-section")) {
+                const allNotesPreview = document.querySelectorAll(".note-section-prev")
+                allNotesPreview.forEach(el => el.classList.remove("active-note-list"))
+                e.target.classList.add("active-note-list")
+            }
+            if (e.target.classList.contains("fav-icon-star")) {
+                e.target.classList.toggle("fav-icon-color");
+            }
+            checkIfFavorite()
+        })
     }
     else if (theStorage == null) {
         console.log("Det finns inga sparade objekt")
@@ -137,14 +161,11 @@ noteBtn[0].addEventListener("click", () => {
     try{                                                              //Undviker typeerror när welcome är borttaget
         removeWelcome.parentNode.removeChild(removeWelcome) 
     }
-    catch(err){}
-
+    catch(err){};
     if (!hidingAndShowingQuill.querySelector("#inputTitle")) {        //Kontrollerar om det redan finns en titel i quill 
         hidingAndShowingQuill.insertAdjacentElement("afterbegin", noteInputElementTitle)
     }
-    console.log("Clicked!");
-
-    if (icon[0].name === "pencil") {
+    if (icon[0].name === "pencil") {                                                                                        // Pencil & Save
         icon[0].name = "save";
     } else {
         icon[0].name = "pencil"
@@ -152,55 +173,48 @@ noteBtn[0].addEventListener("click", () => {
         const inputTitleValue = inputTitle.value;
         const inputTextValueHTML = quill.root.innerHTML;
         const inputTextValue = quill.root.textContent;
-        console.log(inputTextValue)
         hidingAndShowingQuill.style.display = "none";    // Gömmer quill //
         quill.deleteText(0, quill.getLength()); //Raderar text i quill annars visas text från tidigare session//
         if (hidingAndShowingQuill.contains(noteInputElementTitle)) {
             hidingAndShowingQuill.removeChild(noteInputElementTitle) // Raderar titeln//
         }
-        function createObject(title, text, texthtml, favourite, id) {                                      //Constructorfunktion >> skapar objekt att spara i localstorage //
+        function createObject(title, text, texthtml, favorite) {                                      //Constructorfunktion >> skapar objekt att spara i localstorage //
             this.title = title;
             this.text = text;
             this.texthtml = texthtml;
-            this.favourite = false;
-            this.id = id;
+            this.favorite = false;
             this.clickable = clickable;
+            this.date = date;
         }
-        function saveToStorage(title, text, texthtml, favourite, id) {
+        function saveToStorage(title, text, texthtml, favorite) {
             let newObject = Object.create(createObject);                                    //Skapar nytt objekt//
             newObject.title = title;                                                        //Lägger in titel och namn//
             newObject.text = text;
             newObject.texthtml = texthtml;
-            newObject.favourite = false;
-            newObject.id = randomNum();
-            newObject.clickable = function () {
-                console.log(this);
-            }
+            newObject.favorite = false;
+            newObject.date = new Date().toDateString;
             arrayForStorage.push(newObject)
-            console.log(arrayForStorage)                                                //Lägger in objektet i tom array och sparar array i localstorage //
+                                                           //Lägger in objektet i tom array och sparar array i localstorage //
             localStorage.setItem("TextAndTitle", JSON.stringify(arrayForStorage));
             let createDiv = document.createElement("div");
             // createDiv.classList.add("note-section-prev");
             let createTitle = document.createElement("h4");
             let createP = document.createElement("p");
             let createIconStar = document.createElement("i");
-            let createIconPencil = document.createElement("i");
-            let iconOne = "icon fa fa-star";
-            let iconTwo = "icon fa fa-pencil";
 
+            let iconOne = "icon fa fa-star";
             createTitle.textContent = (arrayForStorage[arrayForStorage.length - 1].title)
             createP.textContent = (arrayForStorage[arrayForStorage.length - 1].text)
             noteSection.appendChild(createDiv);
             createDiv.appendChild(createTitle)
             createDiv.appendChild(createP)
             noteSection.appendChild(createDiv)
-
+            createDiv.appendChild(createIconStar)
             createIconStar.classList.add.apply(createIconStar.classList, iconOne.split(" "));
-            createIconPencil.classList.add.apply(createIconPencil.classList, iconTwo.split(" "));
-            createIconPencil.classList.add("note-section-icon");
             createIconStar.classList.add("note-section-icon");
-            createIconPencil.classList.add("note-section-pencil");
-            createIconStar.classList.add("note-section-star");                                   //Lägger det senast tilllagda objektet högst i note-section div// 
+            createIconStar.classList.add("note-section-star"); 
+
+            //Lägger det senast tilllagda objektet högst i note-section div// 
         }
         if (inputTitleValue && inputTextValue) {                    //Om text skrivits i inputfälten så skickas den till saveToStorage funktionen//
             saveToStorage(inputTitleValue, inputTextValue, inputTextValueHTML) // 1 Titel, 2 Text, 3 Text i html form, 4 favorit,        
@@ -209,30 +223,22 @@ noteBtn[0].addEventListener("click", () => {
             console.log("empty input")
         };
         inputTitle.remove();
-
     }
 })
 noteSection.addEventListener("click", (e) => {
-    // console.log(e.target.parentNode);
     if (e.target.parentNode.classList.contains("note-section")) {
-        // console.log("the div");
-        // console.log(e.target);
         const allNotesPreview = document.querySelectorAll(".note-section-prev")
-        // console.log(allNotesPreview);
         allNotesPreview.forEach(el => el.classList.remove("active-note-list"))
         e.target.classList.add("active-note-list")
     }
-
     if (e.target.classList.contains("fav-icon-star")) {
-        // console.log("star");
-        // console.log(e.target.parentNode);
-        e.target.classList.toggle("fav-icon-color")
+        e.target.classList.toggle("fav-icon-color");
     }
 })
+noteSection.addEventListener("click", checkIfFavorite)
 noteSection.addEventListener("click", (e) => {          //Settings//
     if(e.target.textContent == "Background Color"){     //BAKGRUNDSFÄRGER//
-        noteSection.children[1].innerHTML = "Font";
-
+        noteSection.children[1].innerHTML = "Font";  
         e.target.innerHTML= "<p class='settingsText'>Background Colors:</p><div class='btn-group'><button class='bg-btn'><p>Blue</p></button><button class='bg-btn'><p>Silver</p></button><button class='bg-btn'><p>Green</p></button></div>";
         e.target.style.display = "flex";
         e.target.style.flexWrap = "wrap";
@@ -241,7 +247,6 @@ noteSection.addEventListener("click", (e) => {          //Settings//
             e.target.parentNode.children[i].style.backgroundColor = "#ebebeb"       //Nollställer färger för settings
         }
         e.target.style.backgroundColor = "#bcbcbc"
-
         let btnGroup = document.querySelectorAll(".bg-btn");
         for(i=0;i < btnGroup.length;i++){
             btnGroup[i].addEventListener("click",(el)=>{
@@ -280,10 +285,8 @@ noteSection.addEventListener("click", (e) => {          //Settings//
             for(i=0;i < btnGroup.length;i++){
                 btnGroup[i].addEventListener("click",(el)=>{
                     if(el.target.textContent == "Arial Black"){
-                        console.log(theBody[0])
                         theBody[0].style.fontFamily = "Arial black";
                         editor.setAttribute('style','font-family:Arial black' + '!important')
-
                     }
                     else if(el.target.textContent == "Roboto"){
                         theBody[0].style.fontFamily = "Roboto";
@@ -291,11 +294,36 @@ noteSection.addEventListener("click", (e) => {          //Settings//
                     }
                     else if(el.target.textContent == "Brush Script MT"){
                         theBody[0].style.fontFamily = "Brush Script MT";
-                        editor.setAttribute('style','font-family:Brush Script MT' + '!important');
+                        editor.setAttribute('style','Font-family:Brush Script MT' + '!important')
                     }
-        })}}
-
-        // e.target.parentNode.children.forEach
-
-
+        })}}  
 })
+function checkIfFavorite(e){                                      // SPARAR FAVORIT TILL LOCAL STORAGE >> BEHÖVER SYNKAS MED "FAVORITKNAPPEN SÅ DE DYKER UPP I LISTAN" //
+        const allNotesPreview = document.querySelectorAll(".fav-icon-star");
+        allNotesPreview.forEach(el =>{
+            el.addEventListener("click",(e)=>{
+                if(!e.target.classList.contains("fav-icon-color")){
+                    let clickedDivStar = e.target.parentNode.firstChild.textContent;
+                    let theStorageInFavorite = JSON.parse(localStorage.getItem("TextAndTitle"));
+                    for(i=0;i < theStorageInFavorite.length;i++){
+                        if(theStorageInFavorite[i].title == clickedDivStar && theStorageInFavorite[i].favorite == false){
+                            console.log("Objekt las till som favorit")
+                            theStorageInFavorite[i].favorite = true;
+                            localStorage.setItem("TextAndTitle", JSON.stringify(theStorageInFavorite));
+                        }
+                    }
+                }
+                else if(e.target.classList.contains("fav-icon-color")){  
+                    let clickedDivStar = e.target.parentNode.firstChild.textContent;
+                    let theStorageInFavorite = JSON.parse(localStorage.getItem("TextAndTitle"));
+                    for(i=0;i < theStorageInFavorite.length;i++){
+                        if(theStorageInFavorite[i].title == clickedDivStar && theStorageInFavorite[i].favorite == true){
+                            console.log("Objekt togs bort som favorit")
+                            theStorageInFavorite[i].favorite = false;
+                            localStorage.setItem("TextAndTitle", JSON.stringify(theStorageInFavorite));
+                        }
+                    }     
+                }
+            })
+        })
+    }
